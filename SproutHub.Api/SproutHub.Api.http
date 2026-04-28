@@ -1,0 +1,6 @@
+@SproutHub.Api_HostAddress = http://localhost:5239
+
+GET {{SproutHub.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

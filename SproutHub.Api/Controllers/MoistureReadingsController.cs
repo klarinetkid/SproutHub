@@ -1,0 +1,53 @@
+﻿using Docman.DataServices;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using SproutHub.Api.Data;
+
+namespace SproutHub.Api.Controllers
+{
+    public class MoistureReadingsController : Controller
+    {
+        private ApplicationDbContext db;
+        public MoistureReadingsController(ApplicationDbContext db)
+        {
+            this.db = db;
+        }
+
+        [HttpGet]
+        [Route("api/readings")]
+        public ActionResult<TblMoistureReading[]> Get(int? plantId, DateTime? from)
+        {
+            if (plantId == null || from == null) return BadRequest();
+
+            return db.TblMoistureReadings
+                .Where(e => e.PlantId == plantId.Value && e.Date >= from.Value)
+                .OrderBy(e => e.Date).ToArray();
+        }
+
+        [HttpPost]
+        [Route("api/readings")]
+        public ActionResult Post(TblMoistureReading reading)
+        {
+            using (var transaction = db.Database.BeginTransaction())
+            {
+                TblPlant? plant = db.TblPlants.Find(reading.PlantId);
+                if (plant == null)
+                {
+                    plant = new TblPlant() { Id = reading.PlantId };
+                    db.Database.ExecuteSql($"SET IDENTITY_INSERT [dbo].[TblPlants] ON");
+                    db.TblPlants.Add(plant);
+                    db.SaveChanges();
+                }
+
+                reading.Plant = plant;
+                reading.Date = DateTime.Now;
+                db.TblMoistureReadings.Add(reading);
+                db.SaveChanges();
+
+                transaction.Commit();
+            }
+            
+            return NoContent();
+        }
+    }
+}
