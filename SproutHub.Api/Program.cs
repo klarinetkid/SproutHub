@@ -18,7 +18,7 @@ namespace SproutHub.Api
                 ?? throw new Exception("Connection string 'Default' is null");
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseSqlServer(connectionString);
+                options.UseNpgsql(connectionString);
             });
 
             builder.Services.AddCors(options =>

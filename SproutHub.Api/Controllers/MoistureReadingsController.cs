@@ -34,13 +34,12 @@ namespace SproutHub.Api.Controllers
                 if (plant == null)
                 {
                     plant = new TblPlant() { Id = reading.PlantId };
-                    db.Database.ExecuteSql($"SET IDENTITY_INSERT [dbo].[TblPlants] ON");
                     db.TblPlants.Add(plant);
                     db.SaveChanges();
                 }
 
                 reading.Plant = plant;
-                reading.Date = DateTime.Now;
+                reading.Date = DateTime.UtcNow;
                 db.TblMoistureReadings.Add(reading);
                 db.SaveChanges();
 
