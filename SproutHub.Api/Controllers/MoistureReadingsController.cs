@@ -58,8 +58,6 @@ namespace SproutHub.Api.Controllers
         {
             return new MoistureReadingDto()
             {
-                Id = reading.Id,
-                PlantId = reading.PlantId,
                 MoistureReading = reading.MoistureReading,
                 Date = reading.Date
             };

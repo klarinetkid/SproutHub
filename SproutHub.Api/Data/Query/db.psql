@@ -13,3 +13,19 @@ CREATE TABLE "TblMoistureReadings" (
 	"MoistureReading" NUMERIC(5, 2) NOT NULL,
 	"Date" TIMESTAMP NOT NULL
 );
+
+CREATE OR REPLACE VIEW "VwPlants" AS
+SELECT 
+    p."Id",
+    p."DisplayName",
+    r."MoistureReading" AS "LastMoistureReading",
+    r."Date" AS "LastReadingDate"
+FROM "TblPlants" p
+LEFT JOIN (
+    SELECT DISTINCT ON ("PlantId")
+        "PlantId",
+        "MoistureReading",
+        "Date"
+    FROM "TblMoistureReadings"
+    ORDER BY "PlantId", "Date" DESC
+) r ON r."PlantId" = p."Id";

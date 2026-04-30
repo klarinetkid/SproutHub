@@ -1,13 +1,13 @@
-import { max, parseISO } from "date-fns";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { getApiReadings } from "../api/generated/api";
-import { type MoistureReadingDto, type TblPlant } from "../api/generated/model";
+import { type MoistureReadingDto, type VwPlant } from "../api/generated/model";
 import MoistureChart from "./MoistureChart";
 import PlantCardFooter from "./PlantCardFooter";
 import PlantCardHeader from "./PlantCardHeader";
+import LoadingSpinner from "./ui/LoadingSpinner";
 
 interface PlantCardProps {
-  plant: TblPlant;
+  plant: VwPlant;
   showFrom: Date;
 }
 
@@ -26,23 +26,16 @@ export default function PlantCard({ plant, showFrom }: PlantCardProps) {
     fetchData();
   }, []);
 
-  const lastUpdate = useMemo(() => {
-    if (!data?.length) return undefined;
-
-    const maxDate = max(data.map((d) => parseISO(d.date)));
-
-    return data.find((d) => parseISO(d.date).getTime() === maxDate.getTime());
-  }, [data]);
-
   return (
-    <div className="rounded-2xl  border-light border p-5 shadow-lg flex flex-col gap-4">
-      <PlantCardHeader plant={plant} lastUpdate={lastUpdate} />
-
-      {data && (
+    <div className="w-3xl rounded-2xl bg-white border-light border p-5 shadow-lg flex flex-col gap-4">
+      <PlantCardHeader plant={plant} />
+      {data ? (
         <>
           <MoistureChart data={data} />
           <PlantCardFooter plant={plant} data={data} />
         </>
+      ) : (
+        <LoadingSpinner />
       )}
     </div>
   );

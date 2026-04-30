@@ -19,4 +19,13 @@ namespace SproutHub.Api.Data
         public decimal MoistureReading { get; set; }
         public DateTime Date { get; set; }
     }
+
+    [Table("VwPlants")]
+    public class VwPlant
+    {
+        public int Id { get; set; }
+        public string? DisplayName { get; set; }
+        public decimal? LastMoistureReading { get; set; }
+        public DateTime? LastReadingDate { get; set; }
+    }
 }

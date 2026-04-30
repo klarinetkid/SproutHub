@@ -14,9 +14,9 @@ namespace SproutHub.Api.Controllers
 
         [HttpGet]
         [Route("api/plants")]
-        public ActionResult<TblPlant[]> GetList()
+        public ActionResult<VwPlant[]> GetList()
         {
-            return db.TblPlants.OrderBy(e => e.DisplayName).ToArray();
+            return db.VwPlants.OrderBy(e => e.DisplayName).ToArray();
         }
 
         [HttpPut]

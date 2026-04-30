@@ -47,7 +47,7 @@ export default function MoistureChart({ data }: MoistureChartProps) {
       : `url(#${gradientId})`;
 
   return (
-    <ResponsiveContainer width="100%" height={380} className="">
+    <ResponsiveContainer width="100%" height={228} className="">
       <AreaChart
         data={chartData}
         className="border-gray-300/70 shadow-sm rounded-xl py-2"
@@ -61,7 +61,10 @@ export default function MoistureChart({ data }: MoistureChartProps) {
 
         <CartesianGrid strokeDasharray="4 4" vertical={false} />
         <XAxis dataKey="date" interval={Math.ceil(chartData.length / 7)} />
-        <YAxis domain={[0, 100]} />
+        <YAxis
+          domain={[0, 100]}
+          tickFormatter={(value) => (value === 0 ? "" : value)}
+        />
         <Tooltip />
 
         <Area

@@ -1,28 +1,39 @@
 import { isAfter, startOfDay } from "date-fns";
-import { Calendar, Leaf, TrendingDown, type LucideIcon } from "lucide-react";
+import {
+  Calendar,
+  Leaf,
+  TrendingDown,
+  Triangle,
+  type LucideIcon,
+} from "lucide-react";
 import { useMemo } from "react";
-import type { MoistureReadingDto, TblPlant } from "../api/generated/model";
+import type { MoistureReadingDto, VwPlant } from "../api/generated/model";
 import { cn } from "../lib/utils";
 
 interface PlantCardFooterProps {
-  plant: TblPlant;
+  plant: VwPlant;
   data: MoistureReadingDto[];
 }
 
 interface FooterInfoProps {
   label: string;
-  value: string | number | undefined;
+  value: React.ReactNode;
   icon: LucideIcon;
-  className?: string;
+  border?: boolean;
 }
 
-function FooterInfo({ label, value, icon: Icon, className }: FooterInfoProps) {
+function FooterInfo({ label, value, icon: Icon, border }: FooterInfoProps) {
   return (
-    <div className={cn("flex items-center gap-3 flex-1 px-4", className)}>
-      <Icon className="w-10 h-10 p-2 rounded-full text-white bg-green-900" />
+    <div
+      className={cn(
+        "flex items-center gap-3 flex-1 px-4",
+        border ? "border-x border-gray-400" : "",
+      )}
+    >
+      <Icon className="w-10 h-10 p-2 rounded-full text-white bg-green-900 overflow-visible" />
       <div className="flex flex-col items-start">
         <span className="font-semibold">{label}</span>
-        <span className="text-gray-500">{value}</span>
+        <span className="text-gray-500">{value ?? "-"}</span>
       </div>
     </div>
   );
@@ -33,16 +44,41 @@ export default function PlantCardFooter({ plant, data }: PlantCardFooterProps) {
 
   const dataToday = useMemo(
     () =>
-      data
+      data?.length > 0
         ? data
             .filter((d) => isAfter(d.date, todayMidnight))
             .map((d) => d.moistureReading)
-        : [],
+        : null,
     [data],
   );
 
-  const todayMin = useMemo(() => Math.min(...dataToday), [dataToday]);
-  const todayMax = useMemo(() => Math.max(...dataToday), [dataToday]);
+  const todayMin = useMemo(
+    () => (dataToday ? Math.min(...dataToday) : null),
+    [dataToday],
+  );
+  const todayMax = useMemo(
+    () => (dataToday ? Math.max(...dataToday) : null),
+    [dataToday],
+  );
+
+  const hasData = (todayMin || todayMin === 0) && (todayMax || todayMax === 0);
+
+  const getTodaysRange = () => {
+    if (!hasData) return;
+
+    return `${todayMin.toFixed(1)}% - ${todayMax.toFixed(1)}%`;
+  };
+
+  const getTrend = () => {
+    if (!hasData) return;
+
+    return (
+      <span className="flex gap-0 items-center">
+        <Triangle className="w-3 h-3 stroke-3" />
+        {`${(todayMax - todayMin).toFixed(1)} pp today`}
+      </span>
+    );
+  };
 
   return (
     <div className="flex rounded-xl bg-green-500/12 py-4">
@@ -50,14 +86,10 @@ export default function PlantCardFooter({ plant, data }: PlantCardFooterProps) {
       <FooterInfo
         icon={Calendar}
         label="Today's Range"
-        value={`${Math.floor(todayMin * 10) / 10}% - ${Math.floor(todayMax * 10) / 10}%`}
-        className="border-x border-gray-400"
+        value={getTodaysRange()}
+        border
       />
-      <FooterInfo
-        icon={TrendingDown}
-        label="Trend"
-        value={`${Math.floor((todayMax - todayMin) * 10) / 10} pp difference today`}
-      />
+      <FooterInfo icon={TrendingDown} label="Trend" value={getTrend()} />
     </div>
   );
 }

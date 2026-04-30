@@ -9,4 +9,4 @@ export * from './getApiReadingsParams';
 export * from './moistureReadingDto';
 export * from './postApiReadingsParams';
 export * from './putApiPlantsParams';
-export * from './tblPlant';
+export * from './vwPlant';

@@ -5,8 +5,12 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface TblPlant {
+export interface VwPlant {
   id?: number;
   /** @nullable */
   displayName?: string | null;
+  /** @nullable */
+  lastMoistureReading?: number | null;
+  /** @nullable */
+  lastReadingDate?: string | null;
 }

@@ -6,8 +6,6 @@
  */
 
 export interface MoistureReadingDto {
-  id: number;
-  plantId: number;
   moistureReading: number;
   date: string;
 }
