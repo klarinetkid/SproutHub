@@ -28,6 +28,9 @@ namespace SproutHub.Api.Controllers
         [Route("api/readings")]
         public ActionResult Post(TblMoistureReading reading)
         {
+            if (reading.PlantId == 0) return BadRequest("PlantId is required");
+            if (reading.MoistureReading == 0) return BadRequest("MoistureReading is required");
+
             using (var transaction = db.Database.BeginTransaction())
             {
                 TblPlant? plant = db.TblPlants.Find(reading.PlantId);

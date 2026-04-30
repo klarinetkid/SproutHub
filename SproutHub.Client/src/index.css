@@ -1,1 +1,11 @@
 @import "tailwindcss";
+
+@layer base {
+  :root {
+    color: #2a2a2a;
+  }
+
+  .border-light {
+    @apply border-gray-300 border;
+  }
+}

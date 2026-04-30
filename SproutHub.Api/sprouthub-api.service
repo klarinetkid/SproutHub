@@ -1,0 +1,17 @@
+﻿[Unit]
+Description=SproutHub .NET API
+After=network.target
+
+[Service]
+WorkingDirectory=/home/pi/sprouthub-api
+ExecStart=/home/pi/sprouthub-api/SproutHub.Api
+Restart=always
+RestartSec=5
+SyslogIdentifier=sprouthub-api
+User=pi
+Environment=ASPNETCORE_ENVIRONMENT=Development
+Environment=ASPNETCORE_URLS=http://0.0.0.0:5000
+Environment=DOTNET_ROOT=/home/pi/.dotnet
+
+[Install]
+WantedBy=multi-user.target

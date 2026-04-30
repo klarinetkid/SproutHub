@@ -1,7 +1,7 @@
 import axios, { type AxiosInstance, type AxiosRequestConfig } from "axios";
 
 const createHttpClient = (): AxiosInstance => {
-  const baseURL = "http://localhost:5239";
+  const baseURL = "http://zachspi:5000";
 
   const client = axios.create({
     baseURL,
