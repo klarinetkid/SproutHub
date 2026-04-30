@@ -47,12 +47,9 @@ export default function MoistureChart({ data }: MoistureChartProps) {
       : `url(#${gradientId})`;
 
   return (
-    <div className="p-2">
-      <ResponsiveContainer width="100%" height={228} className="">
-        <AreaChart
-          data={chartData}
-          className="border-gray-300/70 shadow-sm rounded-xl"
-        >
+    <div className="p-2 border-gray-300/70 shadow-sm rounded-xl">
+      <ResponsiveContainer width="100%" height={228}>
+        <AreaChart data={chartData}>
           <defs>
             <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#ff2d2d" stopOpacity={0.25} />

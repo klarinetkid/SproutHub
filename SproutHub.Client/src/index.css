@@ -8,4 +8,7 @@
   .border-light {
     @apply border-gray-300 border;
   }
+  .recharts-surface {
+    overflow: visible !important;
+  }
 }
