@@ -8,7 +8,7 @@ void setup() {
 
 void loop() {
   for (int i = 0;i < SENSOR_COUNT;i++) {
-    int moisture = analogRead(A0 + 1);
+    int moisture = analogRead(A0 + i);
     Serial.print("|");
     Serial.print(ID_SEED + i);
     Serial.print("|");
