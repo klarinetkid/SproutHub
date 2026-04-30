@@ -15,13 +15,15 @@ namespace SproutHub.Api.Controllers
 
         [HttpGet]
         [Route("api/readings")]
-        public ActionResult<TblMoistureReading[]> Get(int? plantId, DateTime? from)
+        public ActionResult<MoistureReadingDto[]> Get(int? plantId, DateTime? from)
         {
             if (plantId == null || from == null) return BadRequest();
 
             return db.TblMoistureReadings
                 .Where(e => e.PlantId == plantId.Value && e.Date >= from.Value)
-                .OrderBy(e => e.Date).ToArray();
+                .OrderBy(e => e.Date)
+                .Select(ToMoistureReadingDto)
+                .ToArray();
         }
 
         [HttpPost]
@@ -50,6 +52,17 @@ namespace SproutHub.Api.Controllers
             }
             
             return NoContent();
+        }
+
+        private MoistureReadingDto ToMoistureReadingDto(TblMoistureReading reading)
+        {
+            return new MoistureReadingDto()
+            {
+                Id = reading.Id,
+                PlantId = reading.PlantId,
+                MoistureReading = reading.MoistureReading,
+                Date = reading.Date
+            };
         }
     }
 }

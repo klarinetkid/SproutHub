@@ -10,6 +10,6 @@ export interface TblMoistureReading {
   id?: number;
   plantId?: number;
   plant?: TblPlant;
-  moistureReading?: number;
+  moistureReading: number;
   date?: string;
 }

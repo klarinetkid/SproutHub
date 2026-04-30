@@ -6,9 +6,9 @@
  */
 import type {
   GetApiReadingsParams,
+  MoistureReadingDto,
   PostApiReadingsParams,
   PutApiPlantsParams,
-  TblMoistureReading,
   TblPlant
 } from './model';
 
@@ -19,7 +19,7 @@ import { httpClientMutator } from '../http';
   export const getApiReadings = (
     params?: GetApiReadingsParams,
  ) => {
-      return httpClientMutator<TblMoistureReading[]>(
+      return httpClientMutator<MoistureReadingDto[]>(
       {url: `/api/readings`, method: 'GET',
         params
     },

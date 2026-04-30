@@ -6,7 +6,7 @@
  */
 
 export * from './getApiReadingsParams';
+export * from './moistureReadingDto';
 export * from './postApiReadingsParams';
 export * from './putApiPlantsParams';
-export * from './tblMoistureReading';
 export * from './tblPlant';

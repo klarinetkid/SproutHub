@@ -1,10 +1,7 @@
 import axios, { type AxiosInstance, type AxiosRequestConfig } from "axios";
 
 const createHttpClient = (): AxiosInstance => {
-  const baseURL = "http://zachspi:5000";
-
   const client = axios.create({
-    baseURL,
     timeout: 30000, // 30 seconds
     headers: {
       "Content-Type": "application/json",
