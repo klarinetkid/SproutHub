@@ -27,6 +27,10 @@ export default function PlantList() {
       {plants?.map((p) => (
         <PlantCard key={p.id} plant={p} showFrom={showFrom} />
       ))}
+
+      {/* {plants?.map((p) => (
+        <PlantCard key={p.id} plant={p} showFrom={showFrom} />
+      ))} */}
     </div>
   );
 }
