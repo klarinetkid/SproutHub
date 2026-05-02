@@ -17,7 +17,6 @@ export default function PlantList() {
     const fetchData = async () => {
       const data = await getApiPlants();
       setPlants(data);
-      // setPlants([...data, ...data, ...data, ...data, ...data, ...data]);
     };
 
     fetchData();
@@ -26,12 +25,9 @@ export default function PlantList() {
   return (
     <div
       className={cn(
-        "grid gap-4",
-        // plants && plants.length > 1 ? "grid-cols-3" : "",
+        "grid gap-4 grid-cols-1",
+        plants && plants.length > 1 ? "lg:grid-cols-2" : "",
       )}
-      style={{
-        gridTemplateColumns: `repeat(${Math.min(plants?.length ?? 1, 3)}, 1fr)`,
-      }}
     >
       {plants?.map((p, i) => (
         <PlantCard key={i} plant={p} showFrom={showFrom} />

@@ -27,7 +27,7 @@ export default function PlantCard({ plant, showFrom }: PlantCardProps) {
   }, []);
 
   return (
-    <div className="w-3xl rounded-2xl bg-white border-light border p-5 shadow-lg flex flex-col gap-4">
+    <div className="rounded-2xl bg-white border-light border p-5 shadow-lg flex flex-col gap-4">
       <PlantCardHeader plant={plant} />
       {data ? (
         <>
