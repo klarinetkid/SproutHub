@@ -18,14 +18,15 @@ export default function MoistureChart({ data }: MoistureChartProps) {
   const chartData = useMemo(
     () =>
       data.map((d) => ({
-        date: new Date(d.date).toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
+        date: new Date(d.date).getTime(),
         value: d.moistureReading,
       })),
     [data],
   );
+
+  const now = new Date();
+  const sevenDaysAgo = new Date(now);
+  sevenDaysAgo.setDate(now.getDate() - 7);
 
   const renderLastDot = ({ cx, cy, index }: any) => {
     if (index !== chartData.length - 1) return null;
@@ -58,12 +59,35 @@ export default function MoistureChart({ data }: MoistureChartProps) {
           </defs>
 
           <CartesianGrid strokeDasharray="4 4" vertical={false} />
-          <XAxis dataKey="date" interval={Math.ceil(chartData.length / 7)} />
+          <XAxis
+            dataKey="date"
+            type="number"
+            scale="time"
+            domain={[sevenDaysAgo.getTime(), now.getTime()]}
+            tickFormatter={(ts) =>
+              new Date(ts).toLocaleDateString([], {
+                month: "short",
+                day: "numeric",
+              })
+            }
+          />
+
           <YAxis
             domain={[0, 100]}
             tickFormatter={(value) => (value === 0 ? "" : value)}
           />
-          <Tooltip />
+          <Tooltip
+            formatter={(value) => `${value}%`}
+            labelFormatter={(ts) =>
+              new Date(ts).toLocaleString([], {
+                weekday: "short",
+                month: "short",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              })
+            }
+          />
 
           <Area
             type="monotone"

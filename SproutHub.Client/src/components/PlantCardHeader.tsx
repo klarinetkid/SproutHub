@@ -8,13 +8,23 @@ interface PlantCardHeaderProps {
 }
 
 export default function PlantCardHeader({ plant }: PlantCardHeaderProps) {
-  const daysWateredAgo = useMemo(
-    () =>
-      plant.lastSpikeDate
-        ? differenceInDays(new Date(), new Date(plant.lastSpikeDate))
-        : null,
-    [plant.lastSpikeDate],
-  );
+  const lastWateredLabel = useMemo(() => {
+    if (!plant.lastSpikeDate) return;
+
+    const daysWateredAgo = differenceInDays(
+      new Date(),
+      new Date(plant.lastSpikeDate),
+    );
+
+    switch (daysWateredAgo) {
+      case 0:
+        return "today";
+      case 1:
+        return "yesterday";
+      default:
+        return `${daysWateredAgo} days ago`;
+    }
+  }, [plant.lastSpikeDate]);
 
   return (
     <div className="flex justify-between">
@@ -23,15 +33,10 @@ export default function PlantCardHeader({ plant }: PlantCardHeaderProps) {
           {plant.displayName || `Plant ${plant.id}`}
         </span>
         <div className="flex gap-1 items-center">
-          {daysWateredAgo && (
+          {lastWateredLabel && (
             <>
               <Droplet className="w-4 h-4 text-blue-600 stroke-3 fill-blue-500" />
-              <span className="text-gray-700">
-                Watered{" "}
-                {daysWateredAgo === 0
-                  ? "today"
-                  : `${daysWateredAgo} day${daysWateredAgo === 1 ? "" : "s"} ago`}
-              </span>
+              <span className="text-gray-700">Watered {lastWateredLabel}</span>
             </>
           )}
         </div>
