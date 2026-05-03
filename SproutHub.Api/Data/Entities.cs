@@ -27,5 +27,6 @@ namespace SproutHub.Api.Data
         public string? DisplayName { get; set; }
         public decimal? LastMoistureReading { get; set; }
         public DateTime? LastReadingDate { get; set; }
+        public DateTime? LastSpikeDate { get; set; }
     }
 }

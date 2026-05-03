@@ -7,6 +7,9 @@ namespace SproutHub.Api.Controllers
 {
     public class MoistureReadingsController : Controller
     {
+        private static int dryValue = 450;
+        private static int wetValue = 120;
+
         private ApplicationDbContext db;
         public MoistureReadingsController(ApplicationDbContext db)
         {
@@ -28,23 +31,29 @@ namespace SproutHub.Api.Controllers
 
         [HttpPost]
         [Route("api/readings")]
-        public ActionResult Post(TblMoistureReading reading)
+        public ActionResult Post(int? plantId, int? rawValue)
         {
-            if (reading.PlantId == 0) return BadRequest("PlantId is required");
-            if (reading.MoistureReading == 0) return BadRequest("MoistureReading is required");
+            if (plantId == null) return BadRequest("PlantId is required");
+            if (rawValue == null) return BadRequest("RawValue is required");
 
             using (var transaction = db.Database.BeginTransaction())
             {
-                TblPlant? plant = db.TblPlants.Find(reading.PlantId);
+                TblPlant? plant = db.TblPlants.Find(plantId.Value);
                 if (plant == null)
                 {
-                    plant = new TblPlant() { Id = reading.PlantId };
+                    plant = new TblPlant() { Id = plantId.Value };
                     db.TblPlants.Add(plant);
                     db.SaveChanges();
                 }
 
-                reading.Plant = plant;
-                reading.Date = DateTime.UtcNow;
+                TblMoistureReading reading = new()
+                {
+                    Plant = plant,
+                    PlantId = plant.Id,
+                    Date = DateTime.UtcNow,
+                    MoistureReading = (decimal)moisturePercent(rawValue.Value),
+                };
+
                 db.TblMoistureReadings.Add(reading);
                 db.SaveChanges();
 
@@ -61,6 +70,11 @@ namespace SproutHub.Api.Controllers
                 MoistureReading = reading.MoistureReading,
                 Date = reading.Date
             };
+        }
+        private double moisturePercent(int reading)
+        {
+            double raw = Math.Min(Math.Max(reading, wetValue), dryValue);
+            return Math.Round((raw - dryValue) * (100.0) / (wetValue - dryValue), 2);
         }
     }
 }

@@ -13,4 +13,6 @@ export interface VwPlant {
   lastMoistureReading?: number | null;
   /** @nullable */
   lastReadingDate?: string | null;
+  /** @nullable */
+  lastSpikeDate?: string | null;
 }

@@ -11,21 +11,48 @@ CREATE TABLE "TblMoistureReadings" (
 	"Id" INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 	"PlantId" INTEGER NOT NULL REFERENCES "TblPlants"("Id"),
 	"MoistureReading" NUMERIC(5, 2) NOT NULL,
+	"RawValue" INT NOT NULL,
 	"Date" TIMESTAMP NOT NULL
 );
 
 CREATE OR REPLACE VIEW "VwPlants" AS
-SELECT 
-    p."Id",
-    p."DisplayName",
-    r."MoistureReading" AS "LastMoistureReading",
-    r."Date" AS "LastReadingDate"
-FROM "TblPlants" p
-LEFT JOIN (
+WITH last_reading AS (
     SELECT DISTINCT ON ("PlantId")
         "PlantId",
         "MoistureReading",
         "Date"
     FROM "TblMoistureReadings"
     ORDER BY "PlantId", "Date" DESC
-) r ON r."PlantId" = p."Id";
+),
+reading_diffs AS (
+    SELECT
+        "PlantId",
+        "Date",
+        "MoistureReading",
+        LAG("MoistureReading", 1) OVER (
+            PARTITION BY "PlantId"
+            ORDER BY "Date"
+        ) AS "LastReadingValue"
+    FROM "TblMoistureReadings"
+),
+first_spike AS (
+    SELECT DISTINCT ON ("PlantId")
+        "PlantId",
+        "Date" AS "LastSpikeDate"
+    FROM reading_diffs
+    WHERE
+        "LastReadingValue" IS NOT NULL
+        AND "MoistureReading" - "LastReadingValue" > 50.0
+    ORDER BY "PlantId", "Date" DESC
+)
+SELECT 
+    p."Id",
+    p."DisplayName",
+    r."MoistureReading" AS "LastMoistureReading",
+    r."Date" AS "LastReadingDate",
+    s."LastSpikeDate"
+FROM "TblPlants" p
+LEFT JOIN last_reading r 
+    ON r."PlantId" = p."Id"
+LEFT JOIN first_spike s
+    ON s."PlantId" = p."Id";

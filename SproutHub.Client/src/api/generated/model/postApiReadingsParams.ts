@@ -6,10 +6,6 @@
  */
 
 export type PostApiReadingsParams = {
-Id?: number;
-PlantId?: number;
-'Plant.Id'?: number;
-'Plant.DisplayName'?: string;
-MoistureReading?: number;
-Date?: string;
+plantId?: number;
+rawValue?: number;
 };

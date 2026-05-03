@@ -1,5 +1,6 @@
-import { format } from "date-fns";
+import { differenceInDays, format } from "date-fns";
 import { Clock, Droplet, Droplets } from "lucide-react";
+import { useMemo } from "react";
 import type { VwPlant } from "../api/generated/model";
 
 interface PlantCardHeaderProps {
@@ -7,6 +8,14 @@ interface PlantCardHeaderProps {
 }
 
 export default function PlantCardHeader({ plant }: PlantCardHeaderProps) {
+  const daysWateredAgo = useMemo(
+    () =>
+      plant.lastSpikeDate
+        ? differenceInDays(new Date(), new Date(plant.lastSpikeDate))
+        : null,
+    [plant.lastSpikeDate],
+  );
+
   return (
     <div className="flex justify-between">
       <div className="flex flex-col justify-between">
@@ -14,8 +23,17 @@ export default function PlantCardHeader({ plant }: PlantCardHeaderProps) {
           {plant.displayName || `Plant ${plant.id}`}
         </span>
         <div className="flex gap-1 items-center">
-          <Droplet className="w-4 h-4 text-blue-600 stroke-3 fill-blue-500" />
-          <span className="text-gray-700">Live moisture reading</span>
+          {daysWateredAgo && (
+            <>
+              <Droplet className="w-4 h-4 text-blue-600 stroke-3 fill-blue-500" />
+              <span className="text-gray-700">
+                Watered{" "}
+                {daysWateredAgo === 0
+                  ? "today"
+                  : `${daysWateredAgo} day${daysWateredAgo === 1 ? "" : "s"} ago`}
+              </span>
+            </>
+          )}
         </div>
       </div>
 
