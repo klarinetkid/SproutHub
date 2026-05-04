@@ -1,4 +1,4 @@
-import { differenceInDays, format } from "date-fns";
+import { differenceInDays, format, startOfDay } from "date-fns";
 import { Clock, Droplet, Droplets } from "lucide-react";
 import { useMemo } from "react";
 import type { VwPlant } from "../api/generated/model";
@@ -12,8 +12,8 @@ export default function PlantCardHeader({ plant }: PlantCardHeaderProps) {
     if (!plant.lastSpikeDate) return;
 
     const daysWateredAgo = differenceInDays(
-      new Date(),
-      new Date(plant.lastSpikeDate),
+      startOfDay(new Date()),
+      startOfDay(new Date(plant.lastSpikeDate)),
     );
 
     switch (daysWateredAgo) {

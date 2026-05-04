@@ -41,11 +41,22 @@ export default function MoistureChart({ data }: MoistureChartProps) {
     );
   };
 
+  const dayTicks = useMemo(() => {
+    const seen = new Set<string>();
+
+    return chartData
+      .filter((d) => {
+        const key = new Date(d.date).toDateString();
+
+        if (seen.has(key)) return false;
+
+        seen.add(key);
+        return true;
+      })
+      .map((d) => d.date);
+  }, [chartData]);
+
   const gradientId = useId().replace(/:/g, "");
-  const gradientUrl =
-    typeof window !== "undefined"
-      ? `url(${window.location.href.split("#")[0]}#${gradientId})`
-      : `url(#${gradientId})`;
 
   return (
     <div className="p-2 border-gray-300/70 shadow-sm rounded-xl">
@@ -57,13 +68,14 @@ export default function MoistureChart({ data }: MoistureChartProps) {
               <stop offset="100%" stopColor="#ff2d2d" stopOpacity={0} />
             </linearGradient>
           </defs>
-
           <CartesianGrid strokeDasharray="4 4" vertical={false} />
+
           <XAxis
             dataKey="date"
             type="number"
             scale="time"
             domain={[sevenDaysAgo.getTime(), now.getTime()]}
+            ticks={dayTicks}
             tickFormatter={(ts) =>
               new Date(ts).toLocaleDateString([], {
                 month: "short",
@@ -76,6 +88,7 @@ export default function MoistureChart({ data }: MoistureChartProps) {
             domain={[0, 100]}
             tickFormatter={(value) => (value === 0 ? "" : value)}
           />
+
           <Tooltip
             formatter={(value) => `${value}%`}
             labelFormatter={(ts) =>
@@ -94,7 +107,7 @@ export default function MoistureChart({ data }: MoistureChartProps) {
             dataKey="value"
             stroke="#ff2d2d"
             strokeWidth={3}
-            fill={gradientUrl}
+            fill={`url(${window.location.href.split("#")[0]}#${gradientId})`}
             fillOpacity={1}
             dot={renderLastDot}
           />
